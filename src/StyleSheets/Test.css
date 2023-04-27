@@ -1,0 +1,17 @@
+.text-displaycomponent-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0rem;
+}
+.text-displaycomponent-content {
+  width: 50rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.text-displaycomponent-content > p {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #0e0e0e;
+}
