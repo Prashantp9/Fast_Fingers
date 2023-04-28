@@ -1,3 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap");
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
 .text-displaycomponent-container {
   display: flex;
   justify-content: center;
@@ -14,4 +20,22 @@
   font-weight: 600;
   margin-bottom: 1rem;
   color: #0e0e0e;
+}
+
+.test-input-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+.test-input-container > input {
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  color: #646464;
+  background: #ffffff;
+  border: 1px solid #323232;
+  border-radius: 2px;
+  padding: 0.5rem;
 }
