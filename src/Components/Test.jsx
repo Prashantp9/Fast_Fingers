@@ -37,8 +37,6 @@ const Test = () => {
 
   const inputRef = useRef(null);
 
-  // console.log(WordListStat);
-
   const handlekeyUp = (event) => {
     if (event.key == " ") {
       if (event.target.value !== wordListArray[currWordIndex]) {
@@ -46,6 +44,7 @@ const Test = () => {
       }
       event.target.value = "";
       setCurrWordIndex(currWordIndex + 1);
+      event.preventDefault();
     }
   };
 
@@ -64,6 +63,9 @@ const Test = () => {
       setCurrWordStatus(false);
     }
   };
+
+  // todo
+  // change object key of wordlist stat to index element
 
   return (
     <>
