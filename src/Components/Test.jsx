@@ -1,6 +1,8 @@
-import react, { useEffect, useState, useRef } from "react";
-import { planeWordList } from "../WordList/planewordlist";
 import "../StyleSheets/Test.css";
+
+import react, { useEffect, useRef, useState } from "react";
+
+import { planeWordList } from "../WordList/planewordlist";
 
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
@@ -35,12 +37,25 @@ const Test = () => {
     }));
   };
 
+  const handleCorrectWord = (word) => {
+    setWordListStat((prevWordListStat) => ({
+      ...prevWordListStat,
+      [word]: {
+        ...prevWordListStat[word],
+        color: "green",
+      },
+    }));
+  };
+
   const inputRef = useRef(null);
 
   const handlekeyUp = (event) => {
     if (event.key == " ") {
       if (event.target.value !== wordListArray[currWordIndex]) {
         handleUpdate(wordListArray[currWordIndex]);
+      }
+      if (event.target.value == wordListArray[currWordIndex]) {
+        handleCorrectWord(wordListArray[currWordIndex]);
       }
       event.target.value = "";
       setCurrWordIndex(currWordIndex + 1);
