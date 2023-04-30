@@ -8,11 +8,34 @@ const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
   const [currWordStatus, setCurrWordStatus] = useState(false);
   const [wordListArray, setWordListArray] = useState(planeWordList.split(" "));
+  const [timeElapsed, setTimElapsed] = useState(0);
+  const [isBlock, setIsBlock] = useState(false);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (timeElapsed == 10) {
+      setIsBlock(true);
+      const result = [Object.values(wordListStat)].filter((elm) => {
+        return elm.color == "green";
+      });
+      console.log(result);
+    }
+  }, [timeElapsed]);
+
+  function startTimer(event) {
+    event.preventDefault();
+    if (!intervalRef.current) {
+      console.log("function called", timeElapsed);
+      intervalRef.current = setInterval(() => {
+        setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
+      }, 1000);
+    }
+  }
 
   const [wordListStat, setWordListStat] = useState(() => {
     const initialWordListStat = {};
-    wordListArray.forEach((value) => {
-      initialWordListStat[value] = { test: false, color: "black" };
+    wordListArray.forEach((value, idx) => {
+      initialWordListStat[idx] = { test: false, color: "black" };
     });
     return initialWordListStat;
   });
@@ -52,10 +75,10 @@ const Test = () => {
   const handlekeyUp = (event) => {
     if (event.key == " ") {
       if (event.target.value !== wordListArray[currWordIndex]) {
-        handleUpdate(wordListArray[currWordIndex]);
+        handleUpdate(currWordIndex);
       }
       if (event.target.value == wordListArray[currWordIndex]) {
-        handleCorrectWord(wordListArray[currWordIndex]);
+        handleCorrectWord(currWordIndex);
       }
       event.target.value = "";
       setCurrWordIndex(currWordIndex + 1);
@@ -79,9 +102,6 @@ const Test = () => {
     }
   };
 
-  // todo
-  // change object key of wordlist stat to index element
-
   return (
     <>
       <div className="text-displaycomponent-container">
@@ -93,7 +113,7 @@ const Test = () => {
                 color:
                   currWordStatus && idx == currWordIndex
                     ? "red"
-                    : wordListStat[elm].color,
+                    : wordListStat[idx].color,
               }}
             >
               {elm}
@@ -101,6 +121,7 @@ const Test = () => {
           ))}
         </div>
       </div>
+      <h1>{timeElapsed}</h1>
       <div className="test-input-container">
         <input
           ref={inputRef}
@@ -108,6 +129,8 @@ const Test = () => {
           defaultValue=""
           onChange={handleConrrection}
           onKeyDown={handlekeyUp}
+          onInput={startTimer}
+          disabled={isBlock}
         />
       </div>
     </>
