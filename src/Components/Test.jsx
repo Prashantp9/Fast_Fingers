@@ -1,8 +1,7 @@
 import "../StyleSheets/Test.css";
 
-import react, { useEffect, useRef, useState } from "react";
-
 import { WordList, planeWordList } from "../WordList/planewordlist";
+import react, { useEffect, useRef, useState } from "react";
 
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
@@ -122,11 +121,10 @@ const Test = () => {
 
   function getAccuracy() {
     let correctWords = wordnew.filter((elm, idx) => elm.word == elm.typed);
-    console.log(correctWords);
     let wrongWords = wordnew.filter(
       (elm, idx) => elm.word !== elm.typed && elm.typed
     );
-    console.log(wrongWords);
+
     let backSpacesum = correctWords.reduce((acc, elm, idx) => {
       return acc + elm.backspace;
     }, 0);
@@ -142,18 +140,20 @@ const Test = () => {
       (keyStrokeCount / (keyStrokeCount + backSpacesum)) * 100,
       0
     );
-    console.log(accuracy);
+    // console.log(accuracy);
   }
 
   function getWPM() {
     let count = wordnew.filter((elm, idx) => !!elm.typed).length;
     const wpm = (count / (timeElapsed || 1)) * 60;
-    console.log("WPM : ", wpm);
+    // console.log("WPM : ", wpm);
+    return wpm;
   }
 
   useEffect(() => {
     if (timeElapsed == 60) {
       getAccuracy();
+      console.log(getWPM());
     }
   }, [timeElapsed]);
 
