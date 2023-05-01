@@ -66,7 +66,6 @@ const Test = () => {
     setWordnew((wordsNew) => {
       let words = wordsNew;
       words[currWordIndex] = { ...words[currWordIndex], typed: value };
-      console.log(words);
       return words;
     });
   };
@@ -84,7 +83,6 @@ const Test = () => {
 
   const handleKeyStrokes = () => {
     setWordnew((wordsNew) => {
-      console.log(wordsNew);
       let words = wordsNew;
       words[currWordIndex] = {
         ...words[currWordIndex],
@@ -110,12 +108,6 @@ const Test = () => {
     if (event.key == " ") {
       handleUpdateNew(event.target.value);
       setCurrWordStatus(false);
-      // if (event.target.value !== wordListArray[currWordIndex]) {
-      //   handleUpdate(currWordIndex);
-      // }
-      // if (event.target.value == wordListArray[currWordIndex]) {
-      //   handleCorrectWord(currWordIndex);
-      // }
       event.target.value = "";
       setCurrWordIndex(currWordIndex + 1);
       event.preventDefault();
@@ -123,13 +115,47 @@ const Test = () => {
     if (event.key === "Backspace") {
       handleBackspace();
     }
+    if (event.key !== "Backspace" && event.key !== " ") {
+      handleKeyStrokes();
+    }
   };
 
+  function getAccuracy() {
+    let correctWords = wordnew.filter((elm, idx) => elm.word == elm.typed);
+    console.log(correctWords);
+    let wrongWords = wordnew.filter(
+      (elm, idx) => elm.word !== elm.typed && elm.typed
+    );
+    console.log(wrongWords);
+    let backSpacesum = correctWords.reduce((acc, elm, idx) => {
+      return acc + elm.backspace;
+    }, 0);
+    backSpacesum += wrongWords.reduce((acc, elm, idx) => {
+      return acc + elm.backspace + elm.keyStrokes;
+    }, 0);
+    let keyStrokeCount = correctWords.reduce((acc, elm, idx) => {
+      return acc + elm.keyStrokes;
+    }, 0);
+
+    console.log(keyStrokeCount, backSpacesum);
+    const accuracy = Math.max(
+      (keyStrokeCount / (keyStrokeCount + backSpacesum)) * 100,
+      0
+    );
+    console.log(accuracy);
+  }
+
+  function getWPM() {
+    let count = wordnew.filter((elm, idx) => !!elm.typed).length;
+    const wpm = (count / (timeElapsed || 1)) * 60;
+    console.log("WPM : ", wpm);
+  }
+
   useEffect(() => {
-    if (timeElapsed == 10) {
-      console.log(wordnew);
+    if (timeElapsed == 60) {
+      getAccuracy();
     }
-  }, [wordnew]);
+  }, [timeElapsed]);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -139,12 +165,12 @@ const Test = () => {
     let currWord = e.target.value;
     let currIndex = currWord.length;
 
-    handleKeyStrokes();
     // if (wordListArray[currWordIndex]?.slice(0, currIndex) !== currWord) {
     //   setCurrWordStatus(true);
     // } else {
     //   setCurrWordStatus(false);
     // }
+    getWPM();
     if (wordnew[currWordIndex].word?.slice(0, currIndex) !== currWord) {
       setCurrWordStatus(true);
     } else {
