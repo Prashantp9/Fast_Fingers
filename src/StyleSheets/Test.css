@@ -4,6 +4,22 @@
   font-family: "Poppins", sans-serif;
 }
 
+.default {
+  color: black;
+}
+
+.green {
+  color: green !important;
+}
+
+.red {
+  color: red !important;
+}
+
+.red-cur {
+  color: grey !important;
+}
+
 .text-displaycomponent-container {
   display: flex;
   justify-content: center;

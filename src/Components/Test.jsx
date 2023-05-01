@@ -2,7 +2,7 @@ import "../StyleSheets/Test.css";
 
 import react, { useEffect, useRef, useState } from "react";
 
-import { planeWordList } from "../WordList/planewordlist";
+import { WordList, planeWordList } from "../WordList/planewordlist";
 
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
@@ -11,21 +11,23 @@ const Test = () => {
   const [timeElapsed, setTimElapsed] = useState(0);
   const [isBlock, setIsBlock] = useState(false);
   const intervalRef = useRef(null);
-
-  useEffect(() => {
-    if (timeElapsed == 10) {
-      setIsBlock(true);
-      const result = [Object.values(wordListStat)].filter((elm) => {
-        return elm.color == "green";
-      });
-      console.log(result);
-    }
-  }, [timeElapsed]);
+  // new logic
+  const [wordnew, setWordnew] = useState(() => {
+    const wordArray = [];
+    WordList.map((value, idx) => {
+      const initialState = {};
+      initialState["word"] = value;
+      initialState["backspace"] = 0;
+      initialState["typed"] = "";
+      initialState["keyStrokes"] = 0;
+      wordArray.push(initialState);
+    });
+    return wordArray;
+  });
 
   function startTimer(event) {
     event.preventDefault();
     if (!intervalRef.current) {
-      console.log("function called", timeElapsed);
       intervalRef.current = setInterval(() => {
         setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
       }, 1000);
@@ -35,7 +37,7 @@ const Test = () => {
   const [wordListStat, setWordListStat] = useState(() => {
     const initialWordListStat = {};
     wordListArray.forEach((value, idx) => {
-      initialWordListStat[idx] = { test: false, color: "black" };
+      initialWordListStat[idx] = { test: false };
     });
     return initialWordListStat;
   });
@@ -60,6 +62,38 @@ const Test = () => {
     }));
   };
 
+  const handleUpdateNew = (value) => {
+    setWordnew((wordsNew) => {
+      let words = wordsNew;
+      words[currWordIndex] = { ...words[currWordIndex], typed: value };
+      console.log(words);
+      return words;
+    });
+  };
+
+  const handleBackspace = (value) => {
+    setWordnew((wordsNew) => {
+      let words = wordsNew;
+      words[currWordIndex] = {
+        ...words[currWordIndex],
+        backspace: words[currWordIndex].backspace + 1,
+      };
+      return words;
+    });
+  };
+
+  const handleKeyStrokes = () => {
+    setWordnew((wordsNew) => {
+      console.log(wordsNew);
+      let words = wordsNew;
+      words[currWordIndex] = {
+        ...words[currWordIndex],
+        keyStrokes: words[currWordIndex].keyStrokes + 1,
+      };
+      return words;
+    });
+  };
+
   const handleCorrectWord = (word) => {
     setWordListStat((prevWordListStat) => ({
       ...prevWordListStat,
@@ -74,28 +108,44 @@ const Test = () => {
 
   const handlekeyUp = (event) => {
     if (event.key == " ") {
-      if (event.target.value !== wordListArray[currWordIndex]) {
-        handleUpdate(currWordIndex);
-      }
-      if (event.target.value == wordListArray[currWordIndex]) {
-        handleCorrectWord(currWordIndex);
-      }
+      handleUpdateNew(event.target.value);
+      setCurrWordStatus(false);
+      // if (event.target.value !== wordListArray[currWordIndex]) {
+      //   handleUpdate(currWordIndex);
+      // }
+      // if (event.target.value == wordListArray[currWordIndex]) {
+      //   handleCorrectWord(currWordIndex);
+      // }
       event.target.value = "";
       setCurrWordIndex(currWordIndex + 1);
       event.preventDefault();
     }
+    if (event.key === "Backspace") {
+      handleBackspace();
+    }
   };
+
+  useEffect(() => {
+    if (timeElapsed == 10) {
+      console.log(wordnew);
+    }
+  }, [wordnew]);
 
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
   const handleConrrection = (e) => {
-    // console.log(e.target.value);
     let currWord = e.target.value;
     let currIndex = currWord.length;
 
-    if (wordListArray[currWordIndex]?.slice(0, currIndex) !== currWord) {
+    handleKeyStrokes();
+    // if (wordListArray[currWordIndex]?.slice(0, currIndex) !== currWord) {
+    //   setCurrWordStatus(true);
+    // } else {
+    //   setCurrWordStatus(false);
+    // }
+    if (wordnew[currWordIndex].word?.slice(0, currIndex) !== currWord) {
       setCurrWordStatus(true);
     } else {
       setCurrWordStatus(false);
@@ -106,17 +156,20 @@ const Test = () => {
     <>
       <div className="text-displaycomponent-container">
         <div className="text-displaycomponent-content">
-          {wordListArray.map((elm, idx) => (
+          {wordnew.map((elm, idx) => (
             <p
               key={idx}
-              style={{
-                color:
-                  currWordStatus && idx == currWordIndex
-                    ? "red"
-                    : wordListStat[idx].color,
-              }}
+              // style={{
+              //   color:
+              //     currWordStatus && idx == currWordIndex
+              //       ? "red"
+              //       : wordListStat[idx].color,
+              // }}
+              className={`default ${elm.typed == elm.word && "green"} ${
+                elm.typed !== elm.word && !!elm.typed && "red"
+              } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
             >
-              {elm}
+              {elm.word}
             </p>
           ))}
         </div>
