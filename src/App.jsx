@@ -1,11 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
-import Test from './Components/Test';
+import "./App.css";
+
+import Test from "./Components/Test";
+import TypingHome from "./Components/TypingHome";
+import logo from "./logo.svg";
 
 function App() {
   return (
     <>
-    <Test/>
+      {/* <Test/> */}
+      <TypingHome />
+      <Test />
     </>
   );
 }

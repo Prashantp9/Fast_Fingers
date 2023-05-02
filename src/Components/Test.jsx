@@ -157,9 +157,9 @@ const Test = () => {
     }
   }, [timeElapsed]);
 
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
+  // useEffect(() => {
+  //   inputRef.current.focus();
+  // }, []);
 
   const handleConrrection = (e) => {
     let currWord = e.target.value;
@@ -178,41 +178,60 @@ const Test = () => {
     }
   };
 
+  // return (
+  //   <>
+  //     <div className="text-displaycomponent-container">
+  //       <div className="text-displaycomponent-content">
+  //         {wordnew.map((elm, idx) => (
+  //           <p
+  //             key={idx}
+  //             // style={{
+  //             //   color:
+  //             //     currWordStatus && idx == currWordIndex
+  //             //       ? "red"
+  //             //       : wordListStat[idx].color,
+  //             // }}
+  //             className={`default ${elm.typed == elm.word && "green"} ${
+  //               elm.typed !== elm.word && !!elm.typed && "red"
+  //             } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
+  //           >
+  //             {elm.word}
+  //           </p>
+  //         ))}
+  //       </div>
+  //     </div>
+  //     <h1>{timeElapsed}</h1>
+  //     <div className="test-input-container">
+  //       <input
+  //         ref={inputRef}
+  //         type="text"
+  //         defaultValue=""
+  //         onChange={handleConrrection}
+  //         onKeyDown={handlekeyUp}
+  //         onInput={startTimer}
+  //         disabled={isBlock}
+  //       />
+  //     </div>
+  //   </>
+  // );
   return (
-    <>
-      <div className="text-displaycomponent-container">
-        <div className="text-displaycomponent-content">
-          {wordnew.map((elm, idx) => (
-            <p
-              key={idx}
-              // style={{
-              //   color:
-              //     currWordStatus && idx == currWordIndex
-              //       ? "red"
-              //       : wordListStat[idx].color,
-              // }}
-              className={`default ${elm.typed == elm.word && "green"} ${
-                elm.typed !== elm.word && !!elm.typed && "red"
-              } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
-            >
-              {elm.word}
-            </p>
-          ))}
+    <div className="main-container">
+      <div className="home-Page-content">
+        <div className="typing-test-container">
+          <div className="typing-word-display-container">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Praesentium, rem. Animi quisquam qui voluptates eaque. Dolor vel
+            odio officia alias! Et, dolore aperiam.
+          </div>
+          <div className="typing-pallete-container">
+            <div className="typing-input-container"></div>
+            <div className="wpm-result-container"></div>
+            <div className="typing-test-timer-container"></div>
+            <div className="typing-test-reset-btn"></div>
+          </div>
         </div>
       </div>
-      <h1>{timeElapsed}</h1>
-      <div className="test-input-container">
-        <input
-          ref={inputRef}
-          type="text"
-          defaultValue=""
-          onChange={handleConrrection}
-          onKeyDown={handlekeyUp}
-          onInput={startTimer}
-          disabled={isBlock}
-        />
-      </div>
-    </>
+    </div>
   );
 };
 
