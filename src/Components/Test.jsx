@@ -3,6 +3,8 @@ import "../StyleSheets/Test.css";
 import { WordList, planeWordList } from "../WordList/planewordlist";
 import react, { useEffect, useRef, useState } from "react";
 
+import Refresh from "../Assets/refresh.png";
+
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
   const [currWordStatus, setCurrWordStatus] = useState(false);
@@ -31,6 +33,12 @@ const Test = () => {
         setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
       }, 1000);
     }
+  }
+
+  function stopTimer() {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+    setTimElapsed(0);
   }
 
   const [wordListStat, setWordListStat] = useState(() => {
@@ -153,7 +161,7 @@ const Test = () => {
   useEffect(() => {
     if (timeElapsed == 60) {
       getAccuracy();
-      console.log(getWPM());
+      stopTimer();
     }
   }, [timeElapsed]);
 
@@ -214,20 +222,54 @@ const Test = () => {
   //     </div>
   //   </>
   // );
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
   return (
-    <div className="main-container">
-      <div className="home-Page-content">
-        <div className="typing-test-container">
-          <div className="typing-word-display-container">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Praesentium, rem. Animi quisquam qui voluptates eaque. Dolor vel
-            odio officia alias! Et, dolore aperiam.
+    <div className="home-Page-content">
+      <div className="typing-test-container">
+        <div className="typing-word-display-container">
+          {wordnew.map((elm, idx) => (
+            <p
+              key={idx}
+              style={{
+                color:
+                  currWordStatus && idx == currWordIndex
+                    ? "red"
+                    : wordListStat[idx].color,
+              }}
+              className={`default ${elm.typed == elm.word && "green"} ${
+                elm.typed !== elm.word && !!elm.typed && "red"
+              } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
+            >
+              {elm.word}
+            </p>
+          ))}
+        </div>
+        <div className="typing-pallete-container">
+          <div className="typing-input-container flex-center">
+            <input
+              ref={inputRef}
+              type="text"
+              defaultValue=""
+              onChange={handleConrrection}
+              onKeyDown={handlekeyUp}
+              onInput={startTimer}
+              disabled={isBlock}
+            />
           </div>
-          <div className="typing-pallete-container">
-            <div className="typing-input-container"></div>
-            <div className="wpm-result-container"></div>
-            <div className="typing-test-timer-container"></div>
-            <div className="typing-test-reset-btn"></div>
+          <div className="wpm-result-container flex-center">
+            {Math.ceil(getWPM())} wpm
+          </div>
+          <div className="typing-test-timer-container flex-center">
+            {formatTime(timeElapsed)}
+          </div>
+          <div className="typing-test-reset-btn flex-center">
+            <img src={Refresh} alt="refrsh" />
           </div>
         </div>
       </div>
