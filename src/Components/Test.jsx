@@ -12,6 +12,12 @@ const Test = () => {
   const [timeElapsed, setTimElapsed] = useState(0);
   const [isBlock, setIsBlock] = useState(false);
   const intervalRef = useRef(null);
+  const [refresh, setRefresh] = useState(false);
+  // resulting states
+  const [correctWords, setCorrectWords] = useState(0);
+  const [inCorrectWords, setIncorrectWords] = useState(0);
+  const [accuracy, setAccuracy] = useState(0);
+  const [wpm, setWpm] = useState(0);
   // new logic
   const [wordnew, setWordnew] = useState(() => {
     const wordArray = [];
@@ -68,6 +74,11 @@ const Test = () => {
       },
     }));
   };
+
+  function startRefresh() {
+    setRefresh(true);
+    window.location.reload();
+  }
 
   const handleUpdateNew = (value) => {
     setWordnew((wordsNew) => {
@@ -143,12 +154,15 @@ const Test = () => {
       return acc + elm.keyStrokes;
     }, 0);
 
-    console.log(keyStrokeCount, backSpacesum);
     const accuracy = Math.max(
       (keyStrokeCount / (keyStrokeCount + backSpacesum)) * 100,
       0
     );
-    // console.log(accuracy);
+    return {
+      accuracy: accuracy,
+      correctWords: correctWords.length,
+      wrong: wrongWords.length,
+    };
   }
 
   function getWPM() {
@@ -157,17 +171,25 @@ const Test = () => {
     // console.log("WPM : ", wpm);
     return wpm;
   }
+  function setResultStates(accuracy, correctWords, incorrectWords) {
+    setAccuracy(accuracy);
+    setCorrectWords(correctWords);
+    setIncorrectWords(incorrectWords);
+    setWpm(getWPM());
+  }
 
   useEffect(() => {
     if (timeElapsed == 60) {
-      getAccuracy();
+      const { accuracy, correctWords, wrong } = getAccuracy();
+      setResultStates(accuracy, correctWords, wrong);
       stopTimer();
+      setIsBlock(true);
     }
   }, [timeElapsed]);
 
-  // useEffect(() => {
-  //   inputRef.current.focus();
-  // }, []);
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   const handleConrrection = (e) => {
     let currWord = e.target.value;
@@ -268,9 +290,31 @@ const Test = () => {
           <div className="typing-test-timer-container flex-center">
             {formatTime(timeElapsed)}
           </div>
-          <div className="typing-test-reset-btn flex-center">
-            <img src={Refresh} alt="refrsh" />
+          <div
+            className="typing-test-reset-btn flex-center"
+            onClick={() => startRefresh()}
+          >
+            <img src={Refresh} alt="refrsh" id={refresh ? `rotate` : ``} />
           </div>
+        </div>
+        <div className="typing-test-result-container">
+          <dis className="typing-test-result-content">
+            <div className="final-wpm-result">
+              {wpm} <span>wpm</span>
+            </div>
+            <p id="result-alter-color">
+              Accuracy <span>{Math.ceil(accuracy)}%</span>
+            </p>
+            <p>
+              Correct Characters <span class="green"> {correctWords}</span>{" "}
+            </p>
+            <p id="result-alter-color">
+              Incorrect Characters <span class="red">{inCorrectWords}</span>
+            </p>
+            <p>
+              Time <span> 0.60</span>{" "}
+            </p>
+          </dis>
         </div>
       </div>
     </div>
