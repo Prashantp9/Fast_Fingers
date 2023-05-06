@@ -36,7 +36,7 @@
   display: grid;
   margin-top: 1.5rem;
   gap: 1rem;
-  grid-template-columns: 4fr 1fr 1fr 0.5fr;
+  grid-template-columns: 4fr 1fr 1fr 0.5fr auto;
 }
 .typing-input-container {
   background: var(--pallete_background_color);
@@ -98,13 +98,20 @@
   color: grey !important;
 }
 .typing-test-result-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  // width: 100%;
+  padding: 2rem;
+}
+.typing-test-result-container-singal-player {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   width: 100%;
   padding: 2rem;
 }
 .typing-test-result-content {
-  width: 50%;
+  // width: 50%;
   display: flex;
   flex-direction: column;
   background: var(--pallete_background_color);
@@ -147,6 +154,13 @@
 }
 #rotate {
   animation: rotation 1s infinite linear;
+}
+#gredient-color {
+  background: linear-gradient(97.06deg, #2fe4da 2.9%, #5d78e8 97.24%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 0rem 2rem;
 }
 @keyframes rotation {
   from {

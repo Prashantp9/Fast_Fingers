@@ -3,7 +3,10 @@ import "../StyleSheets/Test.css";
 import { WordList, planeWordList } from "../WordList/planewordlist";
 import react, { useEffect, useRef, useState } from "react";
 
+import PlayersInfoContainer from "./PlayersInfoContainer";
 import Refresh from "../Assets/refresh.png";
+import { socket } from "../customHooks/useSetupHook";
+import { useParams } from "react-router-dom";
 
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
@@ -31,6 +34,13 @@ const Test = () => {
     });
     return wordArray;
   });
+
+  const { id } = useParams();
+
+  function convertToSocketId(str) {
+    const result = str.replace(new RegExp("room", "g"), ""); // remove all occurrences of the target string
+    return result;
+  }
 
   function startTimer(event) {
     event.preventDefault();
@@ -168,7 +178,6 @@ const Test = () => {
   function getWPM() {
     let count = wordnew.filter((elm, idx) => !!elm.typed).length;
     const wpm = (count / (timeElapsed || 1)) * 60;
-    // console.log("WPM : ", wpm);
     return wpm;
   }
   function setResultStates(accuracy, correctWords, incorrectWords) {
@@ -194,12 +203,6 @@ const Test = () => {
   const handleConrrection = (e) => {
     let currWord = e.target.value;
     let currIndex = currWord.length;
-
-    // if (wordListArray[currWordIndex]?.slice(0, currIndex) !== currWord) {
-    //   setCurrWordStatus(true);
-    // } else {
-    //   setCurrWordStatus(false);
-    // }
     getWPM();
     if (wordnew[currWordIndex].word?.slice(0, currIndex) !== currWord) {
       setCurrWordStatus(true);
@@ -208,42 +211,6 @@ const Test = () => {
     }
   };
 
-  // return (
-  //   <>
-  //     <div className="text-displaycomponent-container">
-  //       <div className="text-displaycomponent-content">
-  //         {wordnew.map((elm, idx) => (
-  //           <p
-  //             key={idx}
-  //             // style={{
-  //             //   color:
-  //             //     currWordStatus && idx == currWordIndex
-  //             //       ? "red"
-  //             //       : wordListStat[idx].color,
-  //             // }}
-  //             className={`default ${elm.typed == elm.word && "green"} ${
-  //               elm.typed !== elm.word && !!elm.typed && "red"
-  //             } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
-  //           >
-  //             {elm.word}
-  //           </p>
-  //         ))}
-  //       </div>
-  //     </div>
-  //     <h1>{timeElapsed}</h1>
-  //     <div className="test-input-container">
-  //       <input
-  //         ref={inputRef}
-  //         type="text"
-  //         defaultValue=""
-  //         onChange={handleConrrection}
-  //         onKeyDown={handlekeyUp}
-  //         onInput={startTimer}
-  //         disabled={isBlock}
-  //       />
-  //     </div>
-  //   </>
-  // );
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -296,8 +263,23 @@ const Test = () => {
           >
             <img src={Refresh} alt="refrsh" id={refresh ? `rotate` : ``} />
           </div>
+          {convertToSocketId(id) == socket.id && (
+            <div className="wpm-result-container">
+              <p
+                id="gredient-color"
+                className="wpm-result-container flex-center"
+              >
+                start
+              </p>
+            </div>
+          )}
         </div>
+        {/* for singal player css */}
+        {/* typing-test-result-container-singal-player */}
         <div className="typing-test-result-container">
+          <div className="typing-test-inner-left-container">
+            <PlayersInfoContainer />
+          </div>
           <dis className="typing-test-result-content">
             <div className="final-wpm-result">
               {wpm} <span>wpm</span>

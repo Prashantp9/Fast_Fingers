@@ -69,7 +69,7 @@ const MultiPlayerHeader = () => {
             </div>
             <div
               className="join-room-container"
-              onClick={() => setJoinRoom(!joinRoom)}
+              onClick={() => setJoinRoom(true)}
             >
               Join
               {joinRoom && <JoinRoomContainer />}
