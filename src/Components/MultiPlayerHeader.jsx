@@ -57,21 +57,23 @@ const MultiPlayerHeader = () => {
 
   return (
     <>
-      <div className="create-room-main-container">
-        <div className="room-optin-container">
-          <div
-            className="create-room-container"
-            onClick={() => setCreateRoom(!createRoom)}
-          >
-            Create
-            {createRoom && <CreateRoomContainer socketId={socketId} />}
-          </div>
-          <div
-            className="join-room-container"
-            onClick={() => setJoinRoom(true)}
-          >
-            Join
-            {joinRoom && <JoinRoomContainer />}
+      <div className="create-room-outer-container">
+        <div className="create-room-main-container">
+          <div className="room-optin-container">
+            <div
+              className="create-room-container"
+              onClick={() => setCreateRoom(!createRoom)}
+            >
+              Create
+              {createRoom && <CreateRoomContainer socketId={socketId} />}
+            </div>
+            <div
+              className="join-room-container"
+              onClick={() => setJoinRoom(!joinRoom)}
+            >
+              Join
+              {joinRoom && <JoinRoomContainer />}
+            </div>
           </div>
         </div>
       </div>
