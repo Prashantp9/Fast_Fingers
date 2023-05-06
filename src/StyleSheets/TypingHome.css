@@ -8,9 +8,10 @@ body {
   /* font-size: 62.5%;
   font-size: 10px; */
 }
+
 :root {
   --font_color: #9b9b9b;
-  --nav_font_size: 1rem;
+  --nav_font_size: 1rem;  
   --nav_font_weight: 600;
   --page_background: #191919:
 }

@@ -1,15 +1,30 @@
 import "./App.css";
 
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import MultiPlayerHeader from "./Components/MultiPlayerHeader";
 import Test from "./Components/Test";
 import TypingHome from "./Components/TypingHome";
-import logo from "./logo.svg";
 
 function App() {
   return (
     <>
       {/* <Test/> */}
-      <TypingHome />
-      <Test />
+
+      <BrowserRouter>
+        <TypingHome />
+        <Routes>
+          <Route index element={<MultiPlayerHeader />} />
+          <Route
+            path="/fast_fingers/:id"
+            element={
+              <>
+                <Test />
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
