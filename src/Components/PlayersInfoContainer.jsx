@@ -3,12 +3,16 @@ import "../StyleSheets/PlayersInfoContainer.css";
 import React, { useState } from "react";
 
 import Performance from "../Assets/performance.svg";
-import Profile from "../Assets/Profile.jpg";
+import { Profile } from "../Assets";
+import { assignProfile } from "../utils/multiplayerFunctions";
 import { socket } from "../customHooks/useSetupHook";
 import { useParams } from "react-router-dom";
 import useSocketroom from "../customHooks/useSocketroom";
 
+// import Profile from "../Assets/Profile.jpg";
+
 // import Profile from "../Assets/images/Vector (1).svg";
+const profileArray = ["profileOne", "profletwo", "profilethree", "profilefour"];
 
 const PlayersInfoContainer = () => {
   const { id } = useParams();
@@ -17,6 +21,8 @@ const PlayersInfoContainer = () => {
   let count = 0;
   socket.on("room_members", (data) => {
     setPlayers(data.members);
+    const object = assignProfile(profileArray, players);
+    socket.emit("assignProfileObject");
   });
 
   function convertToSocketId(str) {
@@ -48,7 +54,12 @@ const PlayersInfoContainer = () => {
         {players.map(() => (
           <div className="player-stat-card">
             <div className="player-profile-conatainer">
-              <img src={Profile} alt="" />
+              <img
+                src={
+                  "https://i.pinimg.com/750x/9f/21/d1/9f21d13162049d55bece312d055c494c.jpg"
+                }
+                alt=""
+              />
             </div>
             <div className="player-stat-wpm-conatainer">
               <img src={Performance} alt="" />

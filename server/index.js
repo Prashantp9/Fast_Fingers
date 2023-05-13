@@ -1,5 +1,10 @@
 import "dotenv/config";
 
+import {
+  assignProfile,
+  playerProfileArray,
+} from "./utils/multiplayersFunction.js";
+
 import Express from "express";
 import cors from "cors";
 import { createServer } from "http";
@@ -30,9 +35,12 @@ io.on("connection", (socket) => {
       ...io.sockets.adapter.rooms.get(room),
     ]);
     // io.to(room)
+
     io.to(room).emit("room_members", {
       members: [...io.sockets.adapter.rooms.get(room)],
-      temp: "temp",
+      assignedProfiles: assignProfile(playerProfileArray, [
+        ...io.sockets.adapter.rooms.get(room),
+      ]),
     });
   });
   socket.on("keydown", (data) => {
