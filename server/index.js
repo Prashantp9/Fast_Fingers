@@ -43,6 +43,12 @@ io.on("connection", (socket) => {
       ]),
     });
   });
+
+  socket.on("startgame", (data) => {
+    console.log(data);
+    // io.to(data.id).emit("start", "start the game");
+  });
+
   socket.on("keydown", (data) => {
     console.log(socket.id, data);
     io.to(data.room).emit("room_update", { ...data, id: socket.id });

@@ -1,28 +1,32 @@
 import "../StyleSheets/PlayersInfoContainer.css";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { assignProfile, getMyProfile } from "../utils/multiplayerFunctions";
 
 import Performance from "../Assets/performance.svg";
 import { Profile } from "../Assets";
-import { assignProfile } from "../utils/multiplayerFunctions";
+import { addPlayers } from "../redux/app/fetures/playersSlice";
 import { socket } from "../customHooks/useSetupHook";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import useSocketroom from "../customHooks/useSocketroom";
 
 // import Profile from "../Assets/Profile.jpg";
 
 // import Profile from "../Assets/images/Vector (1).svg";
-const profileArray = ["profileOne", "profletwo", "profilethree", "profilefour"];
 
 const PlayersInfoContainer = () => {
   const { id } = useParams();
   const [players, setPlayers] = useState([]);
+  const [assignProfile, setAssignedProfile] = useState({});
   const [start, setStart] = useState(false);
   let count = 0;
+  const dispatch = useDispatch();
   socket.on("room_members", (data) => {
     setPlayers(data.members);
-    const object = assignProfile(profileArray, players);
-    socket.emit("assignProfileObject");
+    dispatch(addPlayers({ players: data?.members }));
+    setAssignedProfile(data.assignedProfiles);
+    // const object = assignProfile(profileArray, players);
   });
 
   function convertToSocketId(str) {
@@ -51,15 +55,11 @@ const PlayersInfoContainer = () => {
         </div>
       )}
       <div className="players-stat-container">
-        {players.map(() => (
+        {players.map((elm) => (
           <div className="player-stat-card">
             <div className="player-profile-conatainer">
-              <img
-                src={
-                  "https://i.pinimg.com/750x/9f/21/d1/9f21d13162049d55bece312d055c494c.jpg"
-                }
-                alt=""
-              />
+              {console.log(getMyProfile(assignProfile, elm))}
+              <img src={getMyProfile(assignProfile, elm)} alt="" />
             </div>
             <div className="player-stat-wpm-conatainer">
               <img src={Performance} alt="" />
@@ -71,18 +71,18 @@ const PlayersInfoContainer = () => {
         ))}
       </div>
       {/* 
-      <div className="players-profile-base-container">
-        {convertToSocketId(id) == socket.id && (
-          <button onClick={() => startGame(id)} id="start-button">
-            Start
-          </button>
-        )}
-        {players.map(() => (
-          <div className="players-profile-card">
-            <p className="inner-profile-container"></p>
-          </div>
-        ))}
-      </div> */}
+        <div className="players-profile-base-container">
+          {convertToSocketId(id) == socket.id && (
+            <button onClick={() => startGame(id)} id="start-button">
+              Start
+            </button>
+          )}
+          {players.map(() => (
+            <div className="players-profile-card">
+              <p className="inner-profile-container"></p>
+            </div>
+          ))}
+        </div> */}
     </>
   );
 };

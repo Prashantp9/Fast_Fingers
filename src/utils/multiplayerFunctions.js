@@ -1,21 +1,8 @@
-export const assignProfile = function assignProfile(
-  ProfileArray,
-  PlayersArray
-) {
-  const object = {};
-  for (const value of ProfileArray) {
-    object[value] = "";
-  }
-  for (const value of PlayersArray) {
-    const addedPlayers = Object.values(object);
-    if (!addedPlayers.includes(value)) {
-      for (const val in object) {
-        if (!object[val]) {
-          object[val] = value;
-          break;
-        }
-      }
+export const getMyProfile = (assignprofile, socketId) => {
+  const links = Object.keys(assignprofile);
+  for (const val of links) {
+    if (assignprofile[val] == socketId) {
+      return val;
     }
   }
-  return object;
 };

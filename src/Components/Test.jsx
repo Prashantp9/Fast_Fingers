@@ -5,13 +5,15 @@ import react, { useEffect, useRef, useState } from "react";
 
 import PlayersInfoContainer from "./PlayersInfoContainer";
 import Refresh from "../Assets/refresh.png";
-import { socket } from "../customHooks/useSetupHook";
+import { socket } from "../customHooks/useSetupHook.js";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
   const [currWordStatus, setCurrWordStatus] = useState(false);
   const [wordListArray, setWordListArray] = useState(planeWordList.split(" "));
+  const [startbutton, setStartButton] = useState(false);
   const [timeElapsed, setTimElapsed] = useState(0);
   const [isBlock, setIsBlock] = useState(false);
   const intervalRef = useRef(null);
@@ -36,18 +38,28 @@ const Test = () => {
   });
 
   const { id } = useParams();
+  const players = useSelector((state) => state.rootReducer.playersInfo.players);
 
   function convertToSocketId(str) {
     const result = str.replace(new RegExp("room", "g"), ""); // remove all occurrences of the target string
     return result;
   }
 
+  socket.on("start", (data) => {
+    console.log(data);
+  });
+
   function startTimer(event) {
-    event.preventDefault();
-    if (!intervalRef.current) {
-      intervalRef.current = setInterval(() => {
-        setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
-      }, 1000);
+    const isOwner = convertToSocketId(id) == socket.id;
+    const isStart = players.length == 1 || startbutton;
+    if (isOwner && isStart) {
+      event?.preventDefault();
+      if (!intervalRef.current) {
+        socket.emit("startgame", { start: true, id: id });
+        intervalRef.current = setInterval(() => {
+          setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
+        }, 1000);
+      }
     }
   }
 
@@ -268,6 +280,10 @@ const Test = () => {
               <p
                 id="gredient-color"
                 className="wpm-result-container flex-center"
+                onClick={() => {
+                  setStartButton(true);
+                  startTimer();
+                }}
               >
                 start
               </p>
