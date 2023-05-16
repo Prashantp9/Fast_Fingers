@@ -2,12 +2,13 @@ import "../StyleSheets/Test.css";
 
 import { WordList, planeWordList } from "../WordList/planewordlist";
 import react, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import PlayersInfoContainer from "./PlayersInfoContainer";
 import Refresh from "../Assets/refresh.png";
+import { setStart } from "../redux/app/fetures/playersSlice";
 import { socket } from "../customHooks/useSetupHook.js";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
@@ -18,6 +19,7 @@ const Test = () => {
   const [isBlock, setIsBlock] = useState(false);
   const intervalRef = useRef(null);
   const [refresh, setRefresh] = useState(false);
+  const dispatch = useDispatch();
   // resulting states
   const [correctWords, setCorrectWords] = useState(0);
   const [inCorrectWords, setIncorrectWords] = useState(0);
@@ -39,23 +41,26 @@ const Test = () => {
 
   const { id } = useParams();
   const players = useSelector((state) => state.rootReducer.playersInfo.players);
-
+  const isStart = useSelector((state) => state.rootReducer.playersInfo.isStart);
   function convertToSocketId(str) {
     const result = str.replace(new RegExp("room", "g"), ""); // remove all occurrences of the target string
     return result;
   }
 
-  socket.on("start", (data) => {
+  socket.on("startTime", (data) => {
     console.log(data);
+    dispatch(setStart({ start: true }));
+    startTimer();
   });
 
   function startTimer(event) {
     const isOwner = convertToSocketId(id) == socket.id;
     const isStart = players.length == 1 || startbutton;
-    if (isOwner && isStart) {
+    console.log("function has been started");
+    if (isStart || (isOwner && isStart)) {
       event?.preventDefault();
       if (!intervalRef.current) {
-        socket.emit("startgame", { start: true, id: id });
+        socket.emit("startgame", id);
         intervalRef.current = setInterval(() => {
           setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
         }, 1000);
@@ -276,14 +281,16 @@ const Test = () => {
             <img src={Refresh} alt="refrsh" id={refresh ? `rotate` : ``} />
           </div>
           {convertToSocketId(id) == socket.id && (
-            <div className="wpm-result-container">
+            <div
+              className="wpm-result-container"
+              onClick={() => {
+                setStartButton(true);
+                startTimer();
+              }}
+            >
               <p
                 id="gredient-color"
                 className="wpm-result-container flex-center"
-                onClick={() => {
-                  setStartButton(true);
-                  startTimer();
-                }}
               >
                 start
               </p>
