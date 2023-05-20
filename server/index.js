@@ -48,6 +48,13 @@ io.on("connection", (socket) => {
     io.to(room).emit("startTime", { msg: "start game" });
   });
 
+  // =======================================to be completed
+  socket.on("roomResult", (data) => {
+    const resultState = {};
+    io.to(data.room).emit("showResult");
+  });
+  // =======================================
+
   socket.on("keydown", (data) => {
     console.log(socket.id, data);
     io.to(data.room).emit("room_update", { ...data, id: socket.id });

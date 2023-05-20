@@ -223,10 +223,21 @@ const Test = () => {
     inputRef.current.focus();
   }, []);
 
+  //! shift function  to utils once it is completely done
+  const sendRoomResult = (socketId) => {
+    const data = {};
+    const result = {};
+    result[socketId] = Math.ceil(getWPM());
+    data["room"] = id;
+    data["playerResult"] = result;
+    socket.emit("roomResult", data);
+  };
+
   const handleConrrection = (e) => {
     let currWord = e.target.value;
     let currIndex = currWord.length;
     getWPM();
+    sendRoomResult(socket.id);
     if (wordnew[currWordIndex].word?.slice(0, currIndex) !== currWord) {
       setCurrWordStatus(true);
     } else {
@@ -245,6 +256,9 @@ const Test = () => {
   const startEvent = () => {
     socket.emit("startgame", id);
   };
+
+  // result
+  socket.on("showResult", (data) => console.log(data));
 
   return (
     <div className="home-Page-content">
