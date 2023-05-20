@@ -26,9 +26,9 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(io.sockets.adapter.rooms);
   });
-  socket.on("StartGame", (room) => {
-    io.to(room).emit("start", { start: true });
-  });
+  // socket.on("StartGame", (room) => {
+  //   io.to(room).emit("start", { start: true });
+  // });
   socket.on("create", (room) => {
     socket.join(room);
     console.log(io.sockets.adapter.rooms, [
@@ -44,9 +44,8 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("startgame", (data) => {
-    console.log(data);
-    // io.to(data.id).emit("start", "start the game");
+  socket.on("startgame", (room) => {
+    io.to(room).emit("startTime", { msg: "start game" });
   });
 
   socket.on("keydown", (data) => {
@@ -57,6 +56,8 @@ io.on("connection", (socket) => {
     //   .emit("room_update", { ...data, id: socket.id });
   });
 });
+
+io.to("ewhSKeyy2Kf_noYJAAAHroom");
 
 server.listen(process.env.PORT, () => {
   console.log(`server is running on PORT ${process.env.PORT}`);
