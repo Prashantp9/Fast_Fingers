@@ -10,12 +10,15 @@ const playersSlice = createSlice({
     addPlayers: (state, { payload }) => {
       state.players = payload.players;
     },
-    setStart: (state, { payload }) => {
-      state.isStart = payload.start;
+    setStart: (state) => {
+      state.isStart = true;
+    },
+    setStop: (state) => {
+      state.isStart = false;
     },
   },
 });
 
 export default playersSlice.reducer;
 
-export const { addPlayers, setStart } = playersSlice.actions;
+export const { addPlayers, setStart, setStop } = playersSlice.actions;

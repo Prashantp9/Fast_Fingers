@@ -2,11 +2,12 @@ import "../StyleSheets/Test.css";
 
 import { WordList, planeWordList } from "../WordList/planewordlist";
 import react, { useEffect, useRef, useState } from "react";
+import { setStart, setStop } from "../redux/app/fetures/playersSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import PlayersInfoContainer from "./PlayersInfoContainer";
 import Refresh from "../Assets/refresh.png";
-import { setStart } from "../redux/app/fetures/playersSlice";
+import { TestConsole } from "../utils/multiplayerFunctions";
 import { socket } from "../customHooks/useSetupHook.js";
 import { useParams } from "react-router-dom";
 
@@ -14,7 +15,6 @@ const Test = () => {
   const [currWordIndex, setCurrWordIndex] = useState(0);
   const [currWordStatus, setCurrWordStatus] = useState(false);
   const [wordListArray, setWordListArray] = useState(planeWordList.split(" "));
-  const [startbutton, setStartButton] = useState(false);
   const [timeElapsed, setTimElapsed] = useState(0);
   const [isBlock, setIsBlock] = useState(false);
   const intervalRef = useRef(null);
@@ -41,26 +41,31 @@ const Test = () => {
 
   const { id } = useParams();
   const players = useSelector((state) => state.rootReducer.playersInfo.players);
-  const isStart = useSelector((state) => state.rootReducer.playersInfo.isStart);
+  const startbutton = useSelector(
+    (state) => state.rootReducer.playersInfo.isStart
+  );
+
   function convertToSocketId(str) {
     const result = str.replace(new RegExp("room", "g"), ""); // remove all occurrences of the target string
     return result;
   }
-
-  socket.on("startTime", (data) => {
-    console.log(data);
+  //start time on start button event
+  socket.on("startTime", () => {
     dispatch(setStart({ start: true }));
-    startTimer();
+    if (!intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
+      }, 1000);
+    }
   });
+  // ==================
 
   function startTimer(event) {
     const isOwner = convertToSocketId(id) == socket.id;
     const isStart = players.length == 1 || startbutton;
-    console.log("function has been started");
     if (isStart || (isOwner && isStart)) {
       event?.preventDefault();
       if (!intervalRef.current) {
-        socket.emit("startgame", id);
         intervalRef.current = setInterval(() => {
           setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
         }, 1000);
@@ -72,6 +77,7 @@ const Test = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
     setTimElapsed(0);
+    dispatch(setStop());
   }
 
   const [wordListStat, setWordListStat] = useState(() => {
@@ -235,6 +241,11 @@ const Test = () => {
       .toString()
       .padStart(2, "0")}`;
   };
+
+  const startEvent = () => {
+    socket.emit("startgame", id);
+  };
+
   return (
     <div className="home-Page-content">
       <div className="typing-test-container">
@@ -284,7 +295,7 @@ const Test = () => {
             <div
               className="wpm-result-container"
               onClick={() => {
-                setStartButton(true);
+                startEvent();
                 startTimer();
               }}
             >

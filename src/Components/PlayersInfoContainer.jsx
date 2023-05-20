@@ -58,7 +58,7 @@ const PlayersInfoContainer = () => {
         {players.map((elm) => (
           <div className="player-stat-card">
             <div className="player-profile-conatainer">
-              {console.log(getMyProfile(assignProfile, elm))}
+              {/* {console.log(getMyProfile(assignProfile, elm))} */}
               <img src={getMyProfile(assignProfile, elm)} alt="" />
             </div>
             <div className="player-stat-wpm-conatainer">
