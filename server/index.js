@@ -18,6 +18,7 @@ const server = createServer(app);
 // connectin to the socket server
 const io = socketConnection(server);
 let activeSockets = [];
+const playersResult = {};
 
 io.on("connection", (socket) => {
   console.log("Server connected", socket.id);
@@ -50,8 +51,9 @@ io.on("connection", (socket) => {
 
   // =======================================to be completed
   socket.on("roomResult", (data) => {
-    const resultState = {};
-    io.to(data.room).emit("showResult");
+    playersResult[data.playerResult?.socketId] = data.playerResult?.wpm;
+
+    io.to(data.room).emit("showResult", playersResult);
   });
   // =======================================
 
@@ -63,8 +65,6 @@ io.on("connection", (socket) => {
     //   .emit("room_update", { ...data, id: socket.id });
   });
 });
-
-io.to("ewhSKeyy2Kf_noYJAAAHroom");
 
 server.listen(process.env.PORT, () => {
   console.log(`server is running on PORT ${process.env.PORT}`);

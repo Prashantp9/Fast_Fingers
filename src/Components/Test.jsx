@@ -227,7 +227,8 @@ const Test = () => {
   const sendRoomResult = (socketId) => {
     const data = {};
     const result = {};
-    result[socketId] = Math.ceil(getWPM());
+    result["socketId"] = socketId
+    result["wpm"] = Math.ceil(getWPM());
     data["room"] = id;
     data["playerResult"] = result;
     socket.emit("roomResult", data);
