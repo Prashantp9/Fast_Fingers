@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 export default (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: "https://fastf.onrender.com",
+      origin: "192.168.2.104:3000",
     },
   });
 
