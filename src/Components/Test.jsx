@@ -1,8 +1,12 @@
 import "../StyleSheets/Test.css";
 
 import { WordList, planeWordList } from "../WordList/planewordlist";
+import {
+  addResult,
+  setStart,
+  setStop,
+} from "../redux/app/fetures/playersSlice";
 import react, { useEffect, useRef, useState } from "react";
-import { setStart, setStop } from "../redux/app/fetures/playersSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import PlayersInfoContainer from "./PlayersInfoContainer";
@@ -223,14 +227,13 @@ const Test = () => {
     inputRef.current.focus();
   }, []);
 
-  //! shift function  to utils once it is completely done
   const sendRoomResult = (socketId) => {
     const data = {};
     const result = {};
-    result["socketId"] = socketId
-    result["wpm"] = Math.ceil(getWPM());
+    result["player"] = socketId;
+    result["playerResult"] = Math.ceil(getWPM());
     data["room"] = id;
-    data["playerResult"] = result;
+    data["playerData"] = result;
     socket.emit("roomResult", data);
   };
 
@@ -259,7 +262,16 @@ const Test = () => {
   };
 
   // result
-  socket.on("showResult", (data) => console.log(data));
+  socket.on("showResult", (data) => {
+    // AddplayerResult(data);
+    const { playerData } = data;
+    dispatch(
+      addResult({
+        player: playerData?.player,
+        playerResult: playerData?.playerResult,
+      })
+    );
+  });
 
   return (
     <div className="home-Page-content">

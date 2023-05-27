@@ -8,6 +8,14 @@
   gap: 2rem;
   position: relative;
 }
+.user-container-active {
+  padding: 0.1rem;
+  background: linear-gradient(91deg, #1bacf4 0%, #19eeb5 100.16%);
+  border-radius: 0.375rem;
+}
+.user-container {
+  padding: 0.1rem;
+}
 
 .players-profile-card {
   width: 10%;

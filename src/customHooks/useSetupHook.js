@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { io } from "socket.io-client";
 
-const socket = new io("http://172.23.192.1:5000");
+const socket = new io("http://192.168.2.104:5000");
 
 const useSocketHook = () => {
   useEffect(() => {

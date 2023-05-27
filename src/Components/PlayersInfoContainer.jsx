@@ -2,12 +2,12 @@ import "../StyleSheets/PlayersInfoContainer.css";
 
 import React, { useEffect, useState } from "react";
 import { assignProfile, getMyProfile } from "../utils/multiplayerFunctions";
+import { useDispatch, useSelector } from "react-redux";
 
 import Performance from "../Assets/performance.svg";
 import { Profile } from "../Assets";
 import { addPlayers } from "../redux/app/fetures/playersSlice";
 import { socket } from "../customHooks/useSetupHook";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import useSocketroom from "../customHooks/useSocketroom";
 
@@ -20,6 +20,9 @@ const PlayersInfoContainer = () => {
   const [players, setPlayers] = useState([]);
   const [assignProfile, setAssignedProfile] = useState({});
   const [start, setStart] = useState(false);
+  const playerResult = useSelector(
+    (state) => state.rootReducer.playersInfo.scoreRecord
+  );
   let count = 0;
   const dispatch = useDispatch();
   socket.on("room_members", (data) => {
@@ -56,16 +59,22 @@ const PlayersInfoContainer = () => {
       )}
       <div className="players-stat-container">
         {players.map((elm) => (
-          <div className="player-stat-card">
-            <div className="player-profile-conatainer">
-              {/* {console.log(getMyProfile(assignProfile, elm))} */}
-              <img src={getMyProfile(assignProfile, elm)} alt="" />
-            </div>
-            <div className="player-stat-wpm-conatainer">
-              <img src={Performance} alt="" />
-              <p>
-                85 <span>wpm</span>
-              </p>
+          <div
+            className={
+              elm == socket.id ? "user-container-active" : "user-container"
+            }
+          >
+            <div className="player-stat-card">
+              <div className="player-profile-conatainer">
+                {/* {console.log(getMyProfile(assignProfile, elm))} */}
+                <img src={getMyProfile(assignProfile, elm)} alt="" />
+              </div>
+              <div className="player-stat-wpm-conatainer">
+                <img src={Performance} alt="" />
+                <p>
+                  {playerResult[elm] ? playerResult[elm] : 0} <span>wpm</span>
+                </p>
+              </div>
             </div>
           </div>
         ))}

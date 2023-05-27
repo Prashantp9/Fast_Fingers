@@ -51,9 +51,8 @@ io.on("connection", (socket) => {
 
   // =======================================to be completed
   socket.on("roomResult", (data) => {
-    playersResult[data.playerResult?.socketId] = data.playerResult?.wpm;
-
-    io.to(data.room).emit("showResult", playersResult);
+    // playersResult[data.playerResult?.socketId] = data.playerResult?.wpm;
+    io.to(data.room).emit("showResult", data);
   });
   // =======================================
 
