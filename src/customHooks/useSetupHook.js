@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { io } from "socket.io-client";
 
-const socket = new io("http://192.168.2.104:5000");
+const socket = new io("http://fastf.onrender.com:1000");
 
 const useSocketHook = () => {
   useEffect(() => {

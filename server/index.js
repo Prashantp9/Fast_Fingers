@@ -14,6 +14,10 @@ const app = Express();
 
 app.use(cors({ origin: "*" }));
 
+app.get("/check", (req, res) => {
+  res.send("welcome to fastf");
+});
+
 const server = createServer(app);
 // connectin to the socket server
 const io = socketConnection(server);
