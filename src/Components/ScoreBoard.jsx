@@ -8,17 +8,7 @@ import { useState } from "react";
 
 export default function ScoreBoard() {
   const [players, setPlayers] = useState([]);
-  const [assignProfile, setAssignedProfile] = useState({});
-  const dispatch = useDispatch();
-  const playerResult = useSelector(
-    (state) => state.rootReducer.playersInfo.scoreRecord
-  );
 
-  socket.on("room_members", (data) => {
-    setPlayers(data.members);
-    dispatch(addPlayers({ players: data?.members }));
-    setAssignedProfile(data.assignedProfiles);
-  });
   return (
     <div className="scoreboard-backgroud-div">
       <div className="scoreboard-container">

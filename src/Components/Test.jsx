@@ -64,6 +64,30 @@ const Test = () => {
       }, 1000);
     }
   });
+  socket.on("restart_game", () => {
+    stopTimer();
+    setRefresh(true);
+    stopRefresh();
+    setWpm(0);
+    setAccuracy(0);
+    setCorrectWords(0);
+    setIncorrectWords(0);
+    setWordnew(() => {
+      const wordArray = [];
+      WordList.map((value, idx) => {
+        const initialState = {};
+        initialState["word"] = value;
+        initialState["backspace"] = 0;
+        initialState["typed"] = "";
+        initialState["keyStrokes"] = 0;
+        wordArray.push(initialState);
+      });
+      return wordArray;
+    });
+    setIsBlock(false);
+    setCurrWordIndex(0);
+    setCurrWordStatus(false);
+  });
   // ==================
 
   function startTimer(event) {
@@ -114,9 +138,20 @@ const Test = () => {
     }));
   };
 
+  function stopRefresh() {
+    setTimeout(() => {
+      setRefresh(false);
+    }, 1000);
+  }
+  //
+
   function startRefresh() {
-    setRefresh(true);
-    window.location.reload();
+    const isOwner = convertToSocketId(id) == socket.id;
+    if (isOwner) {
+      if (timeElapsed == 0 || players.length == 1) {
+        socket.emit("onData", id);
+      }
+    }
   }
 
   const handleUpdateNew = (value) => {

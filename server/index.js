@@ -59,7 +59,9 @@ io.on("connection", (socket) => {
     io.to(data.room).emit("showResult", data);
   });
   // =======================================
-
+  socket.on("onData", (room) => {
+    io.to(room).emit("restart_game", room);
+  });
   socket.on("keydown", (data) => {
     console.log(socket.id, data);
     io.to(data.room).emit("room_update", { ...data, id: socket.id });
