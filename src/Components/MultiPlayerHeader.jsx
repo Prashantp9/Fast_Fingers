@@ -80,9 +80,13 @@ const JoinRoomContainer = (props) => {
           value={joiningLink}
         />
         <button
+          disabled={!joiningLink}
+          style={{ cursor: joiningLink ? "pointer" : "not-allowed" }}
           onClick={() => {
-            useSocketroom.createRoom(joiningLink);
-            navigate(`/fast_fingers/${joiningLink}`);
+            if (joiningLink) {
+              useSocketroom.createRoom(joiningLink);
+              navigate(`/fast_fingers/${joiningLink}`);
+            }
           }}
         >
           Join Room
