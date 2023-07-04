@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PlayersInfoContainer from "./PlayersInfoContainer";
 import Refresh from "../Assets/refresh.png";
+import ScoreBoard from "./ScoreBoard";
 import { TestConsole } from "../utils/multiplayerFunctions";
 import { socket } from "../customHooks/useSetupHook.js";
 import { useParams } from "react-router-dom";
@@ -28,6 +29,7 @@ const Test = () => {
   const [correctWords, setCorrectWords] = useState(0);
   const [inCorrectWords, setIncorrectWords] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
+  const [showresult, setShowResult] = useState(true);
   const [wpm, setWpm] = useState(0);
   // new logic
   const [wordnew, setWordnew] = useState(() => {
@@ -280,92 +282,95 @@ const Test = () => {
   });
 
   return (
-    <div className="home-Page-content">
-      <div className="typing-test-container">
-        <div className="typing-word-display-container">
-          {wordnew.map((elm, idx) => (
-            <p
-              key={idx}
-              style={{
-                color:
-                  currWordStatus && idx == currWordIndex
-                    ? "red"
-                    : wordListStat[idx].color,
-              }}
-              className={`default ${elm.typed == elm.word && "green"} ${
-                elm.typed !== elm.word && !!elm.typed && "red"
-              } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
-            >
-              {elm.word}
-            </p>
-          ))}
-        </div>
-        <div className="typing-pallete-container">
-          <div className="typing-input-container flex-center">
-            <input
-              ref={inputRef}
-              type="text"
-              defaultValue=""
-              onChange={handleConrrection}
-              onKeyDown={handlekeyUp}
-              onInput={startTimer}
-              disabled={isBlock}
-            />
-          </div>
-          <div className="wpm-result-container flex-center">{wpm} wpm</div>
-          <div className="typing-test-timer-container flex-center">
-            {formatTime(timeElapsed)}
-          </div>
-          <div
-            className="typing-test-reset-btn flex-center"
-            onClick={() => startRefresh()}
-          >
-            <img src={Refresh} alt="refrsh" id={refresh ? `rotate` : ``} />
-          </div>
-          {convertToSocketId(id) == socket.id && (
-            <div
-              className="wpm-result-container"
-              onClick={() => {
-                startEvent();
-                startTimer();
-              }}
-            >
+    <>
+      {/* {showresult && <ScoreBoard />} */}
+      <div className="home-Page-content">
+        <div className="typing-test-container">
+          <div className="typing-word-display-container">
+            {wordnew.map((elm, idx) => (
               <p
-                id="gredient-color"
-                className="wpm-result-container flex-center"
+                key={idx}
+                style={{
+                  color:
+                    currWordStatus && idx == currWordIndex
+                      ? "red"
+                      : wordListStat[idx].color,
+                }}
+                className={`default ${elm.typed == elm.word && "green"} ${
+                  elm.typed !== elm.word && !!elm.typed && "red"
+                } ${currWordIndex == idx && currWordStatus && "red-cur"}`}
               >
-                start
+                {elm.word}
               </p>
-            </div>
-          )}
-        </div>
-        {/* for singal player css */}
-        {/* typing-test-result-container-singal-player */}
-        <div className="typing-test-result-container">
-          <div className="typing-test-inner-left-container">
-            <PlayersInfoContainer />
+            ))}
           </div>
-          <dis className="typing-test-result-content">
-            <div className="final-wpm-result">
-              {wpm}
-              <span>wpm</span>
+          <div className="typing-pallete-container">
+            <div className="typing-input-container flex-center">
+              <input
+                ref={inputRef}
+                type="text"
+                defaultValue=""
+                onChange={handleConrrection}
+                onKeyDown={handlekeyUp}
+                onInput={startTimer}
+                disabled={isBlock}
+              />
             </div>
-            <p id="result-alter-color">
-              Accuracy <span>{Math.ceil(accuracy)}%</span>
-            </p>
-            <p>
-              Correct Characters <span class="green"> {correctWords}</span>{" "}
-            </p>
-            <p id="result-alter-color">
-              Incorrect Characters <span class="red">{inCorrectWords}</span>
-            </p>
-            <p>
-              Time <span> 0.60</span>{" "}
-            </p>
-          </dis>
+            <div className="wpm-result-container flex-center">{wpm} wpm</div>
+            <div className="typing-test-timer-container flex-center">
+              {formatTime(timeElapsed)}
+            </div>
+            <div
+              className="typing-test-reset-btn flex-center"
+              onClick={() => startRefresh()}
+            >
+              <img src={Refresh} alt="refrsh" id={refresh ? `rotate` : ``} />
+            </div>
+            {convertToSocketId(id) == socket.id && (
+              <div
+                className="wpm-result-container"
+                onClick={() => {
+                  startEvent();
+                  startTimer();
+                }}
+              >
+                <p
+                  id="gredient-color"
+                  className="wpm-result-container flex-center"
+                >
+                  start
+                </p>
+              </div>
+            )}
+          </div>
+          {/* for singal player css */}
+          {/* typing-test-result-container-singal-player */}
+          <div className="typing-test-result-container">
+            <div className="typing-test-inner-left-container">
+              <PlayersInfoContainer />
+            </div>
+            <dis className="typing-test-result-content">
+              <div className="final-wpm-result">
+                {wpm}
+                <span>wpm</span>
+              </div>
+              <p id="result-alter-color">
+                Accuracy <span>{Math.ceil(accuracy)}%</span>
+              </p>
+              <p>
+                Correct Characters <span class="green"> {correctWords}</span>{" "}
+              </p>
+              <p id="result-alter-color">
+                Incorrect Characters <span class="red">{inCorrectWords}</span>
+              </p>
+              <p>
+                Time <span> 0.60</span>{" "}
+              </p>
+            </dis>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
