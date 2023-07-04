@@ -203,23 +203,29 @@ const Test = () => {
   }
 
   function getWPM() {
-    let count = wordnew.filter((elm, idx) => !!elm.typed).length;
+    let count = wordnew.filter((elm, idx) => elm.word == elm.typed).length;
+    console.log("count", count);
+    console.log("timeElapsed", timeElapsed);
     const wpm = (count / (timeElapsed || 1)) * 60;
-    return wpm;
+    return Math.ceil(wpm);
   }
-  function setResultStates(accuracy, correctWords, incorrectWords) {
+  function setResultStates(accuracy, correctWords, incorrectWords, fwpm) {
     setAccuracy(accuracy);
     setCorrectWords(correctWords);
     setIncorrectWords(incorrectWords);
-    setWpm(getWPM());
+    setWpm(fwpm);
   }
 
   useEffect(() => {
     if (timeElapsed == 60) {
       const { accuracy, correctWords, wrong } = getAccuracy();
-      setResultStates(accuracy, correctWords, wrong);
+      setResultStates(accuracy, correctWords, wrong, wpm);
       stopTimer();
       setIsBlock(true);
+    }
+    if (timeElapsed < 60 && timeElapsed !== 0) {
+      setWpm(getWPM());
+      sendRoomResult(socket.id);
     }
   }, [timeElapsed]);
 
@@ -231,7 +237,7 @@ const Test = () => {
     const data = {};
     const result = {};
     result["player"] = socketId;
-    result["playerResult"] = Math.ceil(getWPM());
+    result["playerResult"] = wpm;
     data["room"] = id;
     data["playerData"] = result;
     socket.emit("roomResult", data);
@@ -240,8 +246,8 @@ const Test = () => {
   const handleConrrection = (e) => {
     let currWord = e.target.value;
     let currIndex = currWord.length;
-    getWPM();
-    sendRoomResult(socket.id);
+    // getWPM();
+    // sendRoomResult(socket.id);
     if (wordnew[currWordIndex].word?.slice(0, currIndex) !== currWord) {
       setCurrWordStatus(true);
     } else {
@@ -306,9 +312,7 @@ const Test = () => {
               disabled={isBlock}
             />
           </div>
-          <div className="wpm-result-container flex-center">
-            {Math.ceil(getWPM())} wpm
-          </div>
+          <div className="wpm-result-container flex-center">{wpm} wpm</div>
           <div className="typing-test-timer-container flex-center">
             {formatTime(timeElapsed)}
           </div>
@@ -343,7 +347,8 @@ const Test = () => {
           </div>
           <dis className="typing-test-result-content">
             <div className="final-wpm-result">
-              {wpm} <span>wpm</span>
+              {wpm}
+              <span>wpm</span>
             </div>
             <p id="result-alter-color">
               Accuracy <span>{Math.ceil(accuracy)}%</span>
