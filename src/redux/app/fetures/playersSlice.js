@@ -6,6 +6,8 @@ const playersSlice = createSlice({
     players: [],
     isStart: false,
     scoreRecord: {},
+    showScoreBoard: false,
+    scoreRank: [],
   },
 
   reducers: {
@@ -24,10 +26,31 @@ const playersSlice = createSlice({
     clearResult: (state) => {
       state.scoreRecord = {};
     },
+    setRank: (state, { payload }) => {
+      console.log("payload", payload);
+      const roomObj = payload.roomObj;
+      const objArray = [];
+      for (const val in roomObj) {
+        objArray.push(roomObj[val]);
+      }
+      const rankArray = objArray.sort((a, b) => b?.wpm - a?.wpm);
+      state.scoreRank = rankArray;
+      state.showScoreBoard = true;
+    },
+    setShowBoard: (state) => {
+      state.showScoreBoard = false;
+    },
   },
 });
 
 export default playersSlice.reducer;
 
-export const { addPlayers, setStart, addResult, clearResult, setStop } =
-  playersSlice.actions;
+export const {
+  setRank,
+  addPlayers,
+  setStart,
+  addResult,
+  clearResult,
+  setStop,
+  setShowBoard,
+} = playersSlice.actions;

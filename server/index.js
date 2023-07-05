@@ -64,18 +64,36 @@ io.on("connection", (socket) => {
   });
 
   socket.on("resultPop", (data) => {
-    let roomId = data?.roomId;
-    if (!resultPop[roomId]) {
-      if (!resultPop[roomId][data.id]) {
-        resultPop[roomId][data?.id] = data;
+    try {
+      let roomId = data?.roomId;
+      let userId = data?.id; // Move userId declaration outside of if statements
+      if (!resultPop[roomId]) {
+        resultPop[roomId] = {};
       }
-      resultPop[roomId][data?.id] = data;
+      if (!resultPop[roomId][userId]) {
+        resultPop[roomId][userId] = data;
+      }
+      resultPop[roomId][userId] = data;
+    } catch (error) {
+      console.log(error);
     }
-    if (!resultPop[roomId][data?.id]) {
-      resultPop[roomId][data?.id] = data;
+    socket.emit("onRoomResult", resultPop[data.roomId]);
+  });
+
+  socket.on("scoreboardService", (data) => {
+    try {
+      let roomId = data?.roomId;
+      let userId = data?.id; // Move userId declaration outside of if statements
+      if (!resultPop[roomId]) {
+        resultPop[roomId] = {};
+      }
+      if (!resultPop[roomId][userId]) {
+        resultPop[roomId][userId] = data;
+      }
+      resultPop[roomId][userId] = data;
+    } catch (error) {
+      console.log(error);
     }
-    resultPop[roomId][data?.id] = data;
-    console.log(resultPop);
   });
 
   socket.on("keydown", (data) => {

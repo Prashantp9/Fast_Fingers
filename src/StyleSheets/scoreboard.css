@@ -52,3 +52,11 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+.user {
+  /* color: green; */
+  background: linear-gradient(97.06deg, #2fe4da 2.9%, #5d78e8 97.24%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

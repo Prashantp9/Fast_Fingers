@@ -3,6 +3,7 @@ import "../StyleSheets/Test.css";
 import { WordList, planeWordList } from "../WordList/planewordlist";
 import {
   addResult,
+  setRank,
   setStart,
   setStop,
 } from "../redux/app/fetures/playersSlice";
@@ -29,7 +30,6 @@ const Test = () => {
   const [correctWords, setCorrectWords] = useState(0);
   const [inCorrectWords, setIncorrectWords] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
-  const [showresult, setShowResult] = useState(true);
   const [wpm, setWpm] = useState(0);
   // new logic
   const [wordnew, setWordnew] = useState(() => {
@@ -49,6 +49,9 @@ const Test = () => {
   const players = useSelector((state) => state.rootReducer.playersInfo.players);
   const startbutton = useSelector(
     (state) => state.rootReducer.playersInfo.isStart
+  );
+  const showScoreBoard = useSelector(
+    (state) => state.rootReducer.playersInfo.showScoreBoard
   );
 
   function convertToSocketId(str) {
@@ -253,6 +256,11 @@ const Test = () => {
     setWpm(fwpm);
   }
 
+  socket.on("onRoomResult", (data) => {
+    console.log("room result", data);
+    dispatch(setRank({ roomObj: data }));
+  });
+
   useEffect(() => {
     if (timeElapsed == 60) {
       const { accuracy, correctWords, wrong } = getAccuracy();
@@ -261,7 +269,7 @@ const Test = () => {
       setIsBlock(true);
       socket.emit("resultPop", {
         id: socket.id,
-        accuracy: accuracy,
+        accuracy: Math.ceil(accuracy),
         wpm: wpm,
         roomId: id,
       });
@@ -270,6 +278,12 @@ const Test = () => {
       setWpm(getWPM());
       sendRoomResult(socket.id);
     }
+    socket.emit("scoreboardService", {
+      id: socket.id,
+      accuracy: accuracy,
+      wpm: wpm,
+      roomId: id,
+    });
   }, [timeElapsed]);
 
   useEffect(() => {
@@ -324,7 +338,7 @@ const Test = () => {
 
   return (
     <>
-      {/* {showresult && <ScoreBoard />} */}
+      {showScoreBoard && <ScoreBoard />}
       <div className="home-Page-content">
         <div className="typing-test-container">
           <div className="typing-word-display-container">
