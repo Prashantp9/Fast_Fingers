@@ -10,13 +10,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.4);
 }
 .scoreboard-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1rem 1rem;
+  padding: 3rem 7rem;
   backdrop-filter: blur(4px);
 }
 .runners-div {

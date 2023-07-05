@@ -7,12 +7,13 @@ import { socket } from "../customHooks/useSetupHook";
 import { useState } from "react";
 
 export default function ScoreBoard() {
-  const [players, setPlayers] = useState([]);
+  // const [players, setPlayers] = useState();
+  const players = [1, 2, 3];
 
   return (
     <div className="scoreboard-backgroud-div">
       <div className="scoreboard-container">
-        {players.map(() => {
+        {players.map(() => (
           <div className="runners-div">
             <div className="runner-info-div">
               <span id="winner-green">1</span>
@@ -21,8 +22,8 @@ export default function ScoreBoard() {
             <div className="runner-result-div" id="winner-green">
               45 wpm
             </div>
-          </div>;
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );

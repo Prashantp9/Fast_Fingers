@@ -23,6 +23,7 @@ const server = createServer(app);
 const io = socketConnection(server);
 let activeSockets = [];
 const playersResult = {};
+const resultPop = {};
 
 io.on("connection", (socket) => {
   console.log("Server connected", socket.id);
@@ -55,13 +56,28 @@ io.on("connection", (socket) => {
 
   // =======================================to be completed
   socket.on("roomResult", (data) => {
-    // playersResult[data.playerResult?.socketId] = data.playerResult?.wpm;
     io.to(data.room).emit("showResult", data);
   });
   // =======================================
   socket.on("onData", (room) => {
     io.to(room).emit("restart_game", room);
   });
+
+  socket.on("resultPop", (data) => {
+    let roomId = data?.roomId;
+    if (!resultPop[roomId]) {
+      if (!resultPop[roomId][data.id]) {
+        resultPop[roomId][data?.id] = data;
+      }
+      resultPop[roomId][data?.id] = data;
+    }
+    if (!resultPop[roomId][data?.id]) {
+      resultPop[roomId][data?.id] = data;
+    }
+    resultPop[roomId][data?.id] = data;
+    console.log(resultPop);
+  });
+
   socket.on("keydown", (data) => {
     console.log(socket.id, data);
     io.to(data.room).emit("room_update", { ...data, id: socket.id });

@@ -259,6 +259,12 @@ const Test = () => {
       setResultStates(accuracy, correctWords, wrong, wpm);
       stopTimer();
       setIsBlock(true);
+      socket.emit("resultPop", {
+        id: socket.id,
+        accuracy: accuracy,
+        wpm: wpm,
+        roomId: id,
+      });
     }
     if (timeElapsed < 60 && timeElapsed !== 0) {
       setWpm(getWPM());
