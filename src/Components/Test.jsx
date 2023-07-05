@@ -377,6 +377,7 @@ const Test = () => {
             </div>
             <div
               className="typing-test-reset-btn flex-center"
+              style={{ cursor: "pointer" }}
               onClick={() => startRefresh()}
             >
               <img src={Refresh} alt="refrsh" id={refresh ? `rotate` : ``} />
@@ -392,6 +393,7 @@ const Test = () => {
                 <p
                   id="gredient-color"
                   className="wpm-result-container flex-center"
+                  style={{ cursor: "pointer" }}
                 >
                   start
                 </p>
