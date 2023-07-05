@@ -8,6 +8,7 @@ const playersSlice = createSlice({
     scoreRecord: {},
     showScoreBoard: false,
     scoreRank: [],
+    assignProfile: {},
   },
 
   reducers: {
@@ -40,6 +41,9 @@ const playersSlice = createSlice({
     setShowBoard: (state) => {
       state.showScoreBoard = false;
     },
+    setAssignedProfile: (state, { payload }) => {
+      state.assignProfile = payload.data;
+    },
   },
 });
 
@@ -53,4 +57,5 @@ export const {
   clearResult,
   setStop,
   setShowBoard,
+  setAssignedProfile,
 } = playersSlice.actions;

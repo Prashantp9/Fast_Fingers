@@ -280,7 +280,7 @@ const Test = () => {
     }
     socket.emit("scoreboardService", {
       id: socket.id,
-      accuracy: accuracy,
+      accuracy: Math.ceil(accuracy),
       wpm: wpm,
       roomId: id,
     });

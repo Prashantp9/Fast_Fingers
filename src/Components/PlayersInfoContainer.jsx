@@ -1,12 +1,15 @@
 import "../StyleSheets/PlayersInfoContainer.css";
 
 import React, { useEffect, useState } from "react";
+import {
+  addPlayers,
+  setAssignedProfile,
+} from "../redux/app/fetures/playersSlice";
 import { assignProfile, getMyProfile } from "../utils/multiplayerFunctions";
 import { useDispatch, useSelector } from "react-redux";
 
 import Performance from "../Assets/performance.svg";
 import { Profile } from "../Assets";
-import { addPlayers } from "../redux/app/fetures/playersSlice";
 import { socket } from "../customHooks/useSetupHook";
 import { useParams } from "react-router-dom";
 import useSocketroom from "../customHooks/useSocketroom";
@@ -18,7 +21,10 @@ import useSocketroom from "../customHooks/useSocketroom";
 const PlayersInfoContainer = () => {
   const { id } = useParams();
   const [players, setPlayers] = useState([]);
-  const [assignProfile, setAssignedProfile] = useState({});
+  // const [assignProfile, setAssignedProfile] = useState({});
+  const assignProfile = useSelector(
+    (state) => state.rootReducer.playersInfo.assignProfile
+  );
   const [start, setStart] = useState(false);
   const playerResult = useSelector(
     (state) => state.rootReducer.playersInfo.scoreRecord
@@ -28,7 +34,7 @@ const PlayersInfoContainer = () => {
   socket.on("room_members", (data) => {
     setPlayers(data.members);
     dispatch(addPlayers({ players: data?.members }));
-    setAssignedProfile(data.assignedProfiles);
+    dispatch(setAssignedProfile({ data: data.assignedProfiles }));
     // const object = assignProfile(profileArray, players);
   });
 
