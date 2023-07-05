@@ -65,6 +65,7 @@ const Test = () => {
       intervalRef.current = setInterval(() => {
         setTimElapsed((prevTimeElapsed) => prevTimeElapsed + 1);
       }, 1000);
+      inputRef.current.focus();
     }
   });
   socket.on("restart_game", () => {
@@ -322,6 +323,7 @@ const Test = () => {
 
   const startEvent = () => {
     socket.emit("startgame", id);
+    inputRef.current.focus();
   };
 
   // result
